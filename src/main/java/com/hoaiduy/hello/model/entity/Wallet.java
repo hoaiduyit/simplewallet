@@ -4,23 +4,24 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "wallet")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Wallet {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "wallet_id")
     private Integer id;
 
-    @Column(name = "amount")
-    private String amount;
+    @Column(name = "balance")
+    private int balance;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User userId;
 
-    public Wallet(int id, String amount, User userId) {
+    public Wallet(Integer id, int balance, User userId) {
         this.id = id;
-        this.amount = amount;
+        this.balance = balance;
         this.userId = userId;
     }
 
@@ -35,12 +36,12 @@ public class Wallet {
         this.id = id;
     }
 
-    public String getAmount() {
-        return amount;
+    public int getBalance() {
+        return balance;
     }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
 
     public User getUserId() {

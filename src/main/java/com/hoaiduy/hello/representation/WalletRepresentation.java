@@ -3,19 +3,19 @@ package com.hoaiduy.hello.representation;
 import com.hoaiduy.hello.model.entity.Wallet;
 
 public class WalletRepresentation {
-    private String amount;
+    private int amount;
 
-    public String getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
     public static WalletRepresentation build(Wallet walletDetail){
         WalletRepresentation walletRepresentation = new WalletRepresentation();
-        walletRepresentation.setAmount(walletDetail.getAmount());
+//        walletRepresentation.setAmount(walletDetail.getAmount());
         return walletRepresentation;
-    }
+}
 }

@@ -1,26 +1,26 @@
 package com.hoaiduy.hello.model.entity;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "user_table")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer id;
 
     @Column(name = "user_name")
     private String user_name;
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "userId")
-    private Wallet wallets;
+    @Column(name = "user_type")
+    private String user_type;
 
-    public User(int id, String user_name, Wallet wallets) {
+    public User(Integer id, String user_name, String user_type) {
         this.id = id;
         this.user_name = user_name;
-        this.wallets = wallets;
+        this.user_type = user_type;
     }
 
     public User() {
@@ -42,11 +42,11 @@ public class User {
         this.user_name = user_name;
     }
 
-    public Wallet getWallets() {
-        return wallets;
+    public String getUser_type() {
+        return user_type;
     }
 
-    public void setWallets(Wallet wallets) {
-        this.wallets = wallets;
+    public void setUser_type(String user_type) {
+        this.user_type = user_type;
     }
 }

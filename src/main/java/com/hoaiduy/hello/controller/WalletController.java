@@ -1,12 +1,11 @@
 package com.hoaiduy.hello.controller;
 
-import com.hoaiduy.hello.representation.UserRepresentation;
-import com.hoaiduy.hello.representation.WalletRepresentation;
 import com.hoaiduy.hello.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class WalletController {
@@ -19,30 +18,36 @@ public class WalletController {
         return "Hello madafaka";
     }
 
-    @GetMapping("/user")
-    public List<UserRepresentation> getAll(){
-        return walletService.getAllUser();
+    @PostMapping("/user/create")
+    public void createUser(@RequestParam String userName,
+                           @RequestParam String userType,
+                           @RequestParam int balance){
+        try {
+            walletService.createNewUserAndWallet(userName, userType, balance);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    @GetMapping("/user/{id}")
-    public UserRepresentation getSingleClass(@PathVariable int id){
-        return walletService.getUser(id);
-    }
-
-    @GetMapping("user/{id}/{user_id}")
-    public WalletRepresentation getUserWallet(@PathVariable int id, @PathVariable int user_id){
-        return walletService.getUserWallet(id, user_id);
-    }
-
-    @PostMapping("/transaction")
-    public boolean transaction(@RequestParam("senderId") int senderId,
-                               @RequestParam("recipientId") int recipientId,
-                               @RequestParam("amount") int amount){
-        try{
-            return walletService.userTransaction(senderId, recipientId, amount);
+    @PostMapping("/transaction/create")
+    public boolean createTransaction(@RequestParam int senderId,
+                                  @RequestParam int recipientId,
+                                  @RequestParam int amount){
+        try {
+            return walletService.transferMoney(senderId, recipientId, amount);
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @PostMapping("/transaction/success")
+    public String acceptTransaction(@RequestParam int transactionId) {
+        try{
+            return walletService.acceptTransaction(transactionId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
     }
 }
