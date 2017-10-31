@@ -1,11 +1,13 @@
 package com.hoaiduy.hello.model.entity;
 
+import org.redisson.codec.SerializationCodec;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user_table")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class User {
+public class User extends SerializationCodec {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")

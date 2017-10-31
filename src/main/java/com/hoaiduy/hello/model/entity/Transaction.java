@@ -1,11 +1,13 @@
 package com.hoaiduy.hello.model.entity;
 
+import org.redisson.codec.SerializationCodec;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "transaction")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Transaction {
+public class Transaction extends SerializationCodec {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,20 +22,19 @@ public class Transaction {
     @JoinColumn(name = "recipient_id")
     private User recipient;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_trader_id")
+    private Trader senderTrader;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_trader_id")
+    private Trader recipientTrader;
+
     @Column(name = "amount")
     private int amount;
 
     @Column(name = "state")
     private String state;
-
-
-    public Transaction(Integer transaction_id, User sender, User recipient, int amount, String state) {
-        this.transaction_id = transaction_id;
-        this.sender = sender;
-        this.recipient = recipient;
-        this.amount = amount;
-        this.state = state;
-    }
 
     public Transaction() {
     }
@@ -76,5 +77,21 @@ public class Transaction {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public Trader getSenderTrader() {
+        return senderTrader;
+    }
+
+    public void setSenderTrader(Trader senderTrader) {
+        this.senderTrader = senderTrader;
+    }
+
+    public Trader getRecipientTrader() {
+        return recipientTrader;
+    }
+
+    public void setRecipientTrader(Trader recipientTrader) {
+        this.recipientTrader = recipientTrader;
     }
 }

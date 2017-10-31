@@ -1,11 +1,13 @@
 package com.hoaiduy.hello.controller;
 
+import com.hoaiduy.hello.model.entity.Transaction;
+import com.hoaiduy.hello.representation.TransactionRepresentation;
+import com.hoaiduy.hello.representation.UserRepresentation;
 import com.hoaiduy.hello.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class WalletController {
@@ -16,6 +18,16 @@ public class WalletController {
     @GetMapping("/")
     public String hello(){
         return "Hello madafaka";
+    }
+
+    @GetMapping("/user")
+    public List<UserRepresentation> getUsers(){
+        try{
+            return walletService.getAllUser();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @PostMapping("/user/create")
@@ -29,22 +41,48 @@ public class WalletController {
         }
     }
 
-    @PostMapping("/transaction/create")
-    public boolean createTransaction(@RequestParam int senderId,
-                                  @RequestParam int recipientId,
-                                  @RequestParam int amount){
+    @PostMapping("/transaction")
+    public TransactionRepresentation createTransaction(){
         try {
-            return walletService.transferMoney(senderId, recipientId, amount);
+            Transaction t = walletService.createTransaction();
+            return TransactionRepresentation.build(t);
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
-    @PostMapping("/transaction/success")
-    public String acceptTransaction(@RequestParam int transactionId) {
+    @PostMapping("/transaction/{transaction_id}")
+    public TransactionRepresentation updateTransaction(@PathVariable("transaction_id") int transactionId,
+                                     @RequestParam int senderWalletId,
+                                     @RequestParam int recipientWalletId,
+                                     @RequestParam int amount) {
+        try {
+            Transaction t =  walletService.updateTransaction(transactionId, senderWalletId, recipientWalletId, amount);
+            return TransactionRepresentation.build(t);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("transaction/{transaction_id}/confirm")
+    public TransactionRepresentation confirmTransaction(@PathVariable("transaction_id") int transactionId,
+                                                        @RequestParam int amount) {
+        try {
+            Transaction t = walletService.confirm(transactionId, amount);
+            return TransactionRepresentation.build(t);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/transaction/{transaction_id}/success")
+    public TransactionRepresentation acceptTransaction(@PathVariable("transaction_id") int transactionId) {
         try{
-            return walletService.acceptTransaction(transactionId);
+            Transaction t = walletService.acceptTransaction(transactionId);
+            return TransactionRepresentation.build(t);
         }catch (Exception e){
             e.printStackTrace();
             return null;

@@ -1,11 +1,13 @@
 package com.hoaiduy.hello.model.entity;
 
+import org.redisson.codec.SerializationCodec;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "amount")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Amount {
+public class Amount extends SerializationCodec{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,22 +19,6 @@ public class Amount {
 
     @Column(name = "state")
     private String state;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id")
-    private Transaction transaction;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wallet_id")
-    private Wallet wallet;
-
-    public Amount(Integer id, int amount, String state, Transaction transaction, Wallet wallet) {
-        this.id = id;
-        this.amount = amount;
-        this.state = state;
-        this.transaction = transaction;
-        this.wallet = wallet;
-    }
 
     public Amount() {
     }
@@ -59,21 +45,5 @@ public class Amount {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public Transaction getTransaction() {
-        return transaction;
-    }
-
-    public void setTransaction(Transaction transaction) {
-        this.transaction = transaction;
-    }
-
-    public Wallet getWallet() {
-        return wallet;
-    }
-
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
     }
 }
